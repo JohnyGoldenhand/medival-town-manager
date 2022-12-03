@@ -1,35 +1,19 @@
 import { useManageWorkers } from 'hooks/useManageWorkers';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { selectMarket } from 'store/slices/buildings/marketSlice';
+import ReactSlider from 'react-slider';
 
 export const MarketDirectory = () => {
-  const { workers } = useSelector(selectMarket);
-
   const [localWorkers, setLocalWorkers] = useState<number>(() => {
-    if (typeof window !== undefined) {
-      const marketWorkersFromLocalStorage =
-        localStorage.getItem('marketWorkers');
-      const initialState = JSON.parse(marketWorkersFromLocalStorage!);
-      return initialState;
-    } else return 0;
+    const saved = localStorage.getItem('marketWorkers')
+      ? localStorage.getItem('marketWorkers')
+      : localStorage.setItem('marketWorkers', JSON.stringify(0 as number));
+    const initialState = saved ? JSON.parse(saved) : (0 as number);
+    return initialState;
   });
   const { handleAddWorkes, handleDisbandWorkers } = useManageWorkers(
     setLocalWorkers,
     localWorkers
   );
-
-  useEffect(() => {
-    if (localStorage.getItem('marketWorkers') === null) {
-      localStorage.setItem('marketWorkers', JSON.stringify(localWorkers));
-    }
-    const marketWorkers = localStorage.getItem('marketWorkers');
-    if (marketWorkers) {
-      setLocalWorkers(JSON.parse(marketWorkers));
-    } else {
-      console.log('no data');
-    }
-  }, []);
 
   useEffect(() => {
     localStorage.setItem('marketWorkers', JSON.stringify(localWorkers));
@@ -42,10 +26,10 @@ export const MarketDirectory = () => {
   return (
     <div>
       <h2>Market</h2>
+      <input type="range" min={0} max={10} />
       <div>{localWorkers}</div>
       <button onClick={() => handleAddLocalWorker(1)}>add worker</button>
       <button onClick={() => handleDisbandWorkers(1)}>disband worker</button>
-      <button onClick={() => localStorage.clear()}>clear store</button>
     </div>
   );
 };
