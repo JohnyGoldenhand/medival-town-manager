@@ -1,25 +1,36 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import store from 'store/store';
+import { BuildingsDirectory } from 'rotues/BuildingsDirectory/BuildingsDirectory';
+import { Navbar } from 'components/Navbar/Navbar';
+import { AppContainer } from 'components/styles/AppContainer.styled';
+import { RouteNames } from 'rotues/routes';
+import { TownhallDirectory } from 'rotues/TownhallDirectory/TownhallDirectory';
+import { LumberDirectory } from 'rotues/LumberDirectory/LumberDirectory';
+import { MarketDirectory } from 'rotues/MarketDirectory/MarketDirectory';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <React.StrictMode>
+      <Provider store={store}>
+        <Router>
+          <AppContainer>
+            <Routes>
+              <Route path={RouteNames.Homepage} element={<Navbar />}>
+                <Route index element={<BuildingsDirectory />} />
+                <Route
+                  path={RouteNames.Townhall}
+                  element={<TownhallDirectory />}
+                />
+                <Route path={RouteNames.Lumber} element={<LumberDirectory />} />
+                <Route path={RouteNames.Market} element={<MarketDirectory />} />
+              </Route>
+            </Routes>
+          </AppContainer>
+        </Router>
+      </Provider>
+    </React.StrictMode>
   );
 }
 
